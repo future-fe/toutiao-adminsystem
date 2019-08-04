@@ -5,6 +5,8 @@ import Login from '@/views/login'
 import Home from '@/views/home'
 import Welcome from '@/views/welcome'
 import NotFound from '@/views/404'
+import Article from '@/views/article'
+import store from '@/store'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
@@ -21,6 +23,10 @@ const router = new VueRouter({
       path: '/',
       name: 'welcome',
       component: Welcome
+    }, {
+      path: '/article',
+      name: 'article',
+      component: Article
     }]
   }, // 处理404
   {
@@ -29,6 +35,23 @@ const router = new VueRouter({
     component: NotFound
   }
   ]
+})
+
+/*
+ 1. 除登录路由外， 所有的路由跳转前， 判断是否登录过。
+ 2.判断 本地存储 是否存储了用户信息，如果存储 意味登录了放行，如果没有 意味没登录 拦截到登录路由
+ 技术： 路由导航守卫监听到 跳转路由前 */
+// 注册一个全局的前置导航守卫
+router.beforeEach((to, from, next) => {
+  // 如果不去主动的触发 resolve（next 下一步） 会一直等待
+  // 1.判断是不是登录路由
+  /*  if (to.path === '/login') return next()
+   // 2.判断登录状态
+   if (!store.getUser().token) return next('/login')
+   // 3.放行
+   next() */
+  if (to.path !== '/login' && !store.getUser().token) return next('/login')
+  next()
 })
 
 export default router

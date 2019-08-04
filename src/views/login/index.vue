@@ -5,14 +5,19 @@
         src="../../assets/images/logo_index.png"
         alt=""
       >
-      <el-form :model="loginForm">
-        <el-form-item>
+      <el-form
+        :model="loginForm"
+        ref="loginForm"
+        :rules="loginRules"
+        status-icon
+      >
+        <el-form-item prop="mobile">
           <el-input
             placeholder="请输入手机号"
             v-model="loginForm.mobile"
           ></el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="code">
           <el-input
             placeholder="请输入验证码"
             v-model="loginForm.code"
@@ -27,6 +32,7 @@
           <el-button
             type="primary"
             style="width:100%"
+            @click="login"
           >登 录</el-button>
         </el-form-item>
       </el-form>
@@ -37,12 +43,42 @@
 <script>
 export default {
   data () {
+    // 申明校验函数
+    const checkMobile = (rule, value, callback) => {
+      // 校验手机号  1开头 第二位3-9  9位数字
+      if (!/^1[3-9]\d{9}$/.test(value)) {
+        return callback(new Error('手机号格式不对'))
+      }
+      callback()
+    }
     // eslint-disable-next-line no-labels
     return {
+      // 表单对象数据
       loginForm: {
         mobile: '',
         code: ''
+      },
+      // 表单校验规则数据
+      loginRules: {
+        mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { validator: checkMobile, trigger: 'blur' }
+        ],
+        code: [
+          { required: true, message: '请输入验证码', trigger: 'blur' },
+          { len: 6, message: '长度是6位', trigger: 'blur' }
+        ]
       }
+    }
+  },
+  methods: {
+    login () {
+      // 对整个表单进行校验
+      this.$refs.loginForm.validate(valid => {
+        if (valid) {
+          console.log('校验success')
+        }
+      })
     }
   }
 }

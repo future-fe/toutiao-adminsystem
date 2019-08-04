@@ -7,7 +7,7 @@ import '@/style/index.less'
 // 目录下是有默认索引文件 index.js 就是索引文件  .js .vue .json
 import router from '@/router'
 
-import axios from 'axios'
+import axios from '@/api'
 Vue.prototype.$http = axios
 Vue.use(ElementUI)
 

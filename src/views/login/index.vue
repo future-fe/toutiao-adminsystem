@@ -55,8 +55,8 @@ export default {
     return {
       // 表单对象数据
       loginForm: {
-        mobile: '',
-        code: ''
+        mobile: '17601302311',
+        code: '246810'
       },
       // 表单校验规则数据
       loginRules: {
@@ -76,7 +76,21 @@ export default {
       // 对整个表单进行校验
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          console.log('校验success')
+          this.$http
+            .post(
+              'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
+              this.loginForm
+            )
+            .then(res => {
+              // res 响应对象   包含响应主体
+              console.log(res.data)
+              // 跳转去首页
+              this.$router.push('/')
+            })
+            .catch(() => {
+              // 错误提示提示
+              this.$message.error('手机号或验证码错误')
+            })
         }
       })
     }

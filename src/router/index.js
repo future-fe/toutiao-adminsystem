@@ -6,6 +6,7 @@ import Home from '@/views/home'
 import Welcome from '@/views/welcome'
 import NotFound from '@/views/404'
 import Article from '@/views/article'
+import Setting from '@/views/setting'
 import store from '@/store'
 Vue.use(VueRouter)
 
@@ -27,6 +28,10 @@ const router = new VueRouter({
       path: '/article',
       name: 'article',
       component: Article
+    }, {
+      path: '/setting',
+      name: 'setting',
+      component: Setting
     }]
   }, // 处理404
   {

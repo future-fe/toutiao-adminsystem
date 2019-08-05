@@ -52,7 +52,10 @@
           @click="toggleMenu()"
         ></span>
         <span class="text">江苏传智播客科技教育有限公司</span>
-        <el-dropdown class="my-dropdown">
+        <el-dropdown
+          class="my-dropdown"
+          @command="changeMenu"
+        >
           <span class="el-dropdown-link">
             <img
               :src="photo"
@@ -64,9 +67,10 @@
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item
               icon="el-icon-setting"
-              @click.native="setting()"
+              command="setting"
             >个人设置</el-dropdown-item>
-            <el-dropdown-item @click.native="logout ()"><i class="el-icon-unlock"></i>退出登录</el-dropdown-item>
+            <el-dropdown-item command="logout"><i class="
+              el-icon-unlock"></i>退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-header>
@@ -108,6 +112,11 @@ export default {
       // 期望 把事件绑定在组件解析后的原生dom上  @click.native
       // this.$router.push({ name: 'article' })
       this.$router.push('/setting')
+    },
+    // 绑定事件时，不加括号是为了接受默认参数
+    changeMenu (command) {
+      // command 是变量 值setting logout
+      this[command]()
     }
   }
 }

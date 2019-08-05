@@ -55,10 +55,11 @@
         <el-dropdown class="my-dropdown">
           <span class="el-dropdown-link">
             <img
-              src="../../assets/images/avatar.jpg"
-              alt
-            />
-            知非<i class="el-icon-arrow-down el-icon--right"></i>
+              :src="photo"
+              alt=""
+            >
+            {{name}}
+            <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item><i class="el-icon-setting"></i>个人设置</el-dropdown-item>
@@ -75,11 +76,20 @@
 </template>
 
 <script>
+import store from '@/store'
 export default {
   data () {
     return {
-      isCollapse: false
+      isCollapse: false,
+      name: '',
+      photo: ''
     }
+  },
+  created () {
+    // 获取本地用户信息
+    const user = store.getUser()
+    this.name = user.name
+    this.photo = user.photo
   },
   methods: {
     toggleMenu () {

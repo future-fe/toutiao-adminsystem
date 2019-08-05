@@ -75,24 +75,39 @@ export default {
   methods: {
     login () {
       // 对整个表单进行校验
-      this.$refs.loginForm.validate(valid => {
+      // this.$refs.loginForm.validate(valid => {
+      //   if (valid) {
+      //     // 提交登录请求  axios是基于primise封装的 post() 返回值一个promise对象
+      //     this.$http
+      //       .post(
+      //         'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
+      //         this.loginForm
+      //       )
+      //       .then(res => {
+      //         // res 响应对象   包含响应主体
+      //         // console.log(res.data)
+      //         store.setUser(res.data.data)
+      //         // 跳转去首页
+      //         this.$router.push('/')
+      //       })
+      //       .catch(() => {
+      //         // 错误提示提示
+      //         this.$message.error('手机号或验证码错误')
+      //       })
+      //   }
+      // })
+      // async&await使用  怎么处理错误 try{ 业务逻辑 }catch(err){ 业务逻辑失败调用catch,进行错误的处理 } 捕获异常
+      this.$refs.loginForm.validate(async valid => {
         if (valid) {
-          this.$http
-            .post(
-              'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
-              this.loginForm
-            )
-            .then(res => {
-              // res 响应对象   包含响应主体
-              // console.log(res.data)
-              store.setUser(res.data.data)
-              // 跳转去首页
-              this.$router.push('/')
-            })
-            .catch(() => {
-              // 错误提示提示
-              this.$message.error('手机号或验证码错误')
-            })
+          try {
+            const {
+              data: { data }
+            } = await this.$http.post('authorizations', this.loginForm)
+            store.setUser(data)
+            this.$router.push('/')
+          } catch (e) {
+            this.$message.error('手机号或验证码错误')
+          }
         }
       })
     }

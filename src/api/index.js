@@ -4,7 +4,7 @@ import store from '@/store'
 import router from '@/router'
 // 进行配置
 // 1. 基准路径
-axios.defaults.baseURLL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
+axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
 
 // 2. 请求时没有携带token:token认证， 配置请求头信息Authorization:Bearer + 空格 + token信息
 

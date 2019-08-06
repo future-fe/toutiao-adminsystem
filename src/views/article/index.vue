@@ -47,6 +47,48 @@
         </el-form-item>
       </el-form>
     </el-card>
+    <!-- 筛选结果 -->
+    <el-card>
+      <div slot="header">
+        根据筛选条件共查询到 0 条结果：
+      </div>
+      <!-- 表格组件 -->
+      <el-table :data="articles">
+        <!-- el-table-column 表格组件 prop指定字段显示该字段的值  label列标题 -->
+        <el-table-column
+          prop="img"
+          label="封面"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="title"
+          label="标题"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="status"
+          label="状态"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="pubdate"
+          label="发布时间"
+        >
+        </el-table-column>
+        <el-table-column label="操作">
+        </el-table-column>
+      </el-table>
+      <!-- 分页组件 -->
+      <div style="text-align:center; margin-top:30px;">
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :total="1000"
+        >
+        </el-pagination>
+      </div>
+
+    </el-card>
   </div>
 </template>
 
@@ -91,20 +133,16 @@ export default {
         }
       ],
       // 日期数据
-      dataArr: []
+      dataArr: [],
+      // 文章列表
+      articles: []
     }
-  },
-  // 生命周期函数，
-  created () {
-    // 这样发送请求会报错：没有认证，登录后调用401 (UNAUTHORIZED)，调不通接口
-    this.$http
-      .get('http://ttapi.research.itcast.cn/mp/v1_0/articles')
-      .then(res => {
-        console.log(res.data)
-      })
   }
 }
 </script>
 
 <style scoped lang='less'>
+.el-card {
+  margin-bottom: 20px;
+}
 </style>

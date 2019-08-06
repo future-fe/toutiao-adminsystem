@@ -47,36 +47,11 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <!-- 筛选结果,标签中的内容称为插槽内容 -->
-    <!-- 1. 当你需要额外插入内容给组件使用，使用默认插槽 -->
-    <!-- <my-test> +++content </my-test>
-    <my-test>---内容</my-test> -->
-    <!-- 2.使用组件的时候没有插入内容，使用后备内容 -->
-    <!-- <my-test></my-test> -->
-    <!-- 3. 当你需要插入多处内容的时候,使用具名插槽 -->
-    <!-- <my-test>
-      <div slot="content">content</div>
-      <div slot="footer">footer</div>
-    </my-test> -->
-    <!-- 4.作用域插槽:组件内部的数据是相互独立，在使用组件的时候需要使用组件内部的数据 -->
-    <my-test>
-      <!-- slot="content" 指定插槽 -->
-      <!-- slot-scope="scope" scope是slot插槽上所有的自定义属性的集合{msg:'my-test的数据'} -->
-      <div
-        slot="content"
-        slot-scope="scope"
-      >content 得到组件内部数据：{{scope.msg}}</div>
-      <!-- 目前以上的写法，是2.6.0的vue版本之前的写法，新的写法：v-slot:插槽名称="插槽上所有自定义属性集合数据对象" -->
-      <template v-slot:footer="scope">footer 得到组件内部数据：{{scope.msg}}</template>
-    </my-test>
   </div>
 </template>
 
 <script>
-import MyBread from '@/components/my-bread'
-import MyTest from '@/components/my-test'
 export default {
-  components: { MyBread, MyTest },
   data () {
     return {
       // 筛选项表单数据  提交给后台参数

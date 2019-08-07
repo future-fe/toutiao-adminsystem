@@ -25,9 +25,9 @@
           >
             <el-option
               v-for="item in channelOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
             >
             </el-option>
           </el-select>
@@ -55,27 +55,77 @@
       <!-- 表格组件 -->
       <el-table :data="articles">
         <!-- el-table-column 表格组件 prop指定字段显示该字段的值  label列标题 -->
-        <el-table-column
-          prop="img"
-          label="封面"
-        >
+        <el-table-column label="封面">
+          <template slot-scope="scope">
+            <!--使用作用域插槽，results外部数据，articles传入了表格组件，帮你做了遍历，每一项数据插槽 row="每一项数据",
+             使用每一项数据，其实是组件内部的数据，scope.row 获取 -->
+            <el-image
+              :src="scope.row.cover.images[0]"
+              fit="cover"
+              style="width:120px;height:80px"
+            >
+              <!-- 通过slot = error自定义加载失败图片显示 -->
+              <div slot="error">
+                <img
+                  src="../../assets/images/error.gif"
+                  style="width: 120px; height: 80px"
+                  alt=""
+                >
+              </div>
+            </el-image>
+          </template>
         </el-table-column>
         <el-table-column
           prop="title"
           label="标题"
         >
         </el-table-column>
-        <el-table-column
-          prop="status"
-          label="状态"
-        >
+        <el-table-column>
+          <template slot-scope="scope">
+            <el-tag
+              v-if="scope.row.status===0"
+              type="info"
+            >草稿"</el-tag>
+            <el-tag v-if="scope.row.status===1">待审核</el-tag>
+            <el-tag
+              v-if="scope.row.status===2"
+              type="success"
+            >审核通过</el-tag>
+            <el-tag
+              v-if="scope.row.status===3"
+              type="warning"
+            >审核失败</el-tag>
+            <el-tag
+              v-if="scope.row.status===4"
+              type="danger"
+            >已删除</el-tag>
+          </template>
         </el-table-column>
         <el-table-column
           prop="pubdate"
           label="发布时间"
         >
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column
+          label="操作"
+          width="120px"
+        >
+          <template slot-scope="scope">
+            <el-button
+              @click="edit(scope.row.id)"
+              plain
+              type="primary"
+              icon="el-icon-edit"
+              circle
+            ></el-button>
+            <el-button
+              @click="del(scope.row.id)"
+              plain
+              type="danger"
+              icon="el-icon-delete"
+              circle
+            ></el-button>
+          </template>
         </el-table-column>
       </el-table>
       <!-- 分页组件 -->
@@ -99,43 +149,44 @@ export default {
       // 筛选项表单数据  提交给后台参数
       reqParams: {
         status: null,
-        channel_id: null
+        channel_id: null,
+        begin_pubdate: null,
+        end_pubdate: null,
+        page: 1,
+        per_page: 20
       },
       // 频道下拉选项数据
-      channelOptions: [
-        {
-          value: '1',
-          label: '开发者资讯'
-        },
-        {
-          value: '2',
-          label: 'ios'
-        },
-        {
-          value: '3',
-          label: 'c++'
-        },
-        {
-          value: '4',
-          label: 'android'
-        },
-        {
-          value: '5',
-          label: 'css'
-        },
-        {
-          value: '6',
-          label: '数据库'
-        },
-        {
-          value: '7',
-          label: '区块链'
-        }
-      ],
+      channelOptions: [],
       // 日期数据
       dataArr: [],
       // 文章列表
-      articles: []
+      articles: [],
+      // 总条数
+      total: 0
+    }
+  },
+  created () {
+    // 频道下拉选项数据
+    this.getChannelOptions()
+    // 获取文章列表数据
+    this.getArticles()
+  },
+  methods: {
+    // 频道下拉选项数据
+    async getChannelOptions () {
+      const {
+        data: { data }
+      } = await this.$http.get('channels')
+      this.channelOptions = data.channels
+    },
+    // 文章列表
+    async getArticles () {
+      // axios get传参  url?key=value&key1=value1 ... 麻烦
+      // axios get传参  第二传参是对象 {params:指定传参对象}  发请求的时候自动拼接地址栏后
+      const {
+        data: { data }
+      } = await this.$http.get('articles', { params: this.reqParams })
+      this.articles = data.results
     }
   }
 }

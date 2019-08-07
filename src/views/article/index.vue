@@ -20,6 +20,7 @@
         </el-form-item>
         <el-form-item label="频道：">
           <el-select
+            clearable
             v-model="reqParams.channel_id"
             placeholder="请选择"
           >
@@ -39,18 +40,23 @@
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+            @change="changeDate"
+            value-format="yyyy-MM-dd"
           >
           </el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">筛选</el-button>
+          <el-button
+            type="primary"
+            @click="search()"
+          >筛选</el-button>
         </el-form-item>
       </el-form>
     </el-card>
     <!-- 筛选结果 -->
     <el-card>
       <div slot="header">
-        根据筛选条件共查询到 0 条结果：
+        根据筛选条件共查询到 {{total}}条结果：
       </div>
       <!-- 表格组件 -->
       <el-table :data="articles">
@@ -130,10 +136,17 @@
       </el-table>
       <!-- 分页组件 -->
       <div style="text-align:center; margin-top:30px;">
+        <!-- :total="total" 指定总条数 -->
+        <!-- 默认一页显示10条每页显示条目个数  :page-size="reqParams.per_page"-->
+        <!-- @current-change="changePager"  页码改变事件 当前页变动时候触发的事件。 -->
+        <!-- 更新过数据后  当前页码也需要修改  选中对应的按钮 current-page 当前页数-->
         <el-pagination
           background
           layout="prev, pager, next"
-          :total="1000"
+          :total="total"
+          :page-size=" reqParams.per_page"
+          :current-page="reqParams.page"
+          @current-change="changePager"
         >
         </el-pagination>
       </div>
@@ -165,6 +178,15 @@ export default {
       total: 0
     }
   },
+  // computed 计算属性使用场景：当你需要一个新数据，需要依赖data中的数据。
+  // watch 侦听器的使用场景：当你需要监听某一个属性的变化，去做一些开销较大操作(异步操作)
+  watch: {
+    'reqParams.channel_id' (newValue) {
+      if (newValue === '') {
+        this.reqParams.channel_id = null
+      }
+    }
+  },
   created () {
     // 频道下拉选项数据
     this.getChannelOptions()
@@ -172,8 +194,33 @@ export default {
     this.getArticles()
   },
   methods: {
+    // 日期选择后的事件
+    changeDate (dataArr) {
+      if (dataArr) {
+        this.reqParams.begin_pubdate = dataArr[0]
+        this.reqParams.end_pubdate = dataArr[1]
+      } else {
+        this.reqParams.begin_pubdate = null
+        this.reqParams.end_pubdate = null
+      }
+    },
+    // 筛选函数
+    search () {
+      // 筛选项双向绑定  拿着对应的数据发请求即可  注意：重新筛选后页码第一页
+      this.reqParams.page = 1
+      this.getArticles()
+    },
+    // 改变分页事件对应函数
+    changePager (newPage) {
+      // 修改获取数据的页码
+      // 提交当前页码给后台 才能获取对应的数据
+      this.reqParams.page = newPage
+      this.getArticles()
+    },
     // 频道下拉选项数据
     async getChannelOptions () {
+      // const o = {data:{}};  const {data} = o;  一层解构  对象的结构一层
+      // const res = {data:{data:{channels:[]}}}; 多层解构  const {data:{data:data}}
       const {
         data: { data }
       } = await this.$http.get('channels')
@@ -186,7 +233,10 @@ export default {
       const {
         data: { data }
       } = await this.$http.get('articles', { params: this.reqParams })
+      // 列表数据
       this.articles = data.results
+      // 总条数
+      this.total = data.total_count
     }
   }
 }

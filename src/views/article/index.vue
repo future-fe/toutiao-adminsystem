@@ -160,6 +160,7 @@ export default {
   data () {
     return {
       // 筛选项表单数据  提交给后台参数
+      // axios 提交的数据  值为null是不会携带参数
       reqParams: {
         status: null,
         channel_id: null,
@@ -194,8 +195,31 @@ export default {
     this.getArticles()
   },
   methods: {
+    // 编辑函数
+    edit (id) {
+      this.$router.push('/publish?id=' + id)
+    },
+    // 删除函数
+    del (id) {
+      // 弹出确认框 点击确认后  发删除请求  响应成功更新列表即可
+      this.$confirm('亲，此操作将永久删除该文章, 是否继续?', '温馨提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async () => {
+          // 点击确认 发删除请求
+          // 后台没有任何响应  一直等待响应 导致这两句代码没有执行  上面一句代码报错  没有抛出这个错误
+          await this.$http.delete(`articles/${id}`)
+          // 删除成功
+          this.$message.success('删除文章成功')
+          this.getArticles()
+        })
+        .catch(() => {})
+    },
     // 日期选择后的事件
     changeDate (dataArr) {
+      // 严谨一些，清空数据考虑在内
       if (dataArr) {
         this.reqParams.begin_pubdate = dataArr[0]
         this.reqParams.end_pubdate = dataArr[1]

@@ -2,11 +2,28 @@
 import axios from 'axios'
 import store from '@/store'
 import router from '@/router'
+import JSONBig from 'json-bigint'
+
 // 进行配置
 // 1. 基准路径
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
 
-// 2. 请求时没有携带token:token认证， 配置请求头信息Authorization:Bearer + 空格 + token信息
+// 2. `transformResponse` 在传递给 then/catch 前，允许修改响应数据
+axios.defaults.transformResponse = [
+  // 对 data 进行任意转换处理
+  (data) => {
+    // data 此时是后端的原始数据
+    // data 后台如果没有返回数据  值null
+    // JSONBig.parse(null) 报错  阻止程序运行
+    try {
+      return JSONBig.parse(data)
+    } catch (e) {
+      return data
+    }
+  }
+]
+
+// 3. 请求时没有携带token:token认证， 配置请求头信息Authorization:Bearer + 空格 + token信息
 
 /* //方式一:只会执行一次
   //1.登录的时候 ，没有token，此时去获取了token undefined；
@@ -32,7 +49,7 @@ axios.interceptors.request.use((config) => {
   return Promise.reject(error)
 })
 
-// 3.带了token但是失效
+// 4.带了token但是失效
 // 响应拦截器: 是每次响应到客户端的时候， 拦截。
 axios.interceptors.response.use((response) => {
   // 成功的时候做一些事情

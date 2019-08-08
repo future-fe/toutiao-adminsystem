@@ -19,21 +19,11 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道：">
-          <el-select
-            clearable
-            v-model="reqParams.channel_id"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in channelOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            >
-            </el-option>
-          </el-select>
+          <!-- 使用自己的组件 -->
+          <!-- v-model 背后 :value  @input -->
+          <my-channel v-model="reqParams.channel_id"></my-channel>
         </el-form-item>
-        <el-form-item label="日期：">
+        <el-form-item label=" 日期：">
           <el-date-picker
             v-model="dataArr"
             type="daterange"
@@ -169,8 +159,6 @@ export default {
         page: 1,
         per_page: 20
       },
-      // 频道下拉选项数据
-      channelOptions: [],
       // 日期数据
       dataArr: [],
       // 文章列表
@@ -179,18 +167,7 @@ export default {
       total: 0
     }
   },
-  // computed 计算属性使用场景：当你需要一个新数据，需要依赖data中的数据。
-  // watch 侦听器的使用场景：当你需要监听某一个属性的变化，去做一些开销较大操作(异步操作)
-  watch: {
-    'reqParams.channel_id' (newValue) {
-      if (newValue === '') {
-        this.reqParams.channel_id = null
-      }
-    }
-  },
   created () {
-    // 频道下拉选项数据
-    this.getChannelOptions()
     // 获取文章列表数据
     this.getArticles()
   },
@@ -240,15 +217,6 @@ export default {
       // 提交当前页码给后台 才能获取对应的数据
       this.reqParams.page = newPage
       this.getArticles()
-    },
-    // 频道下拉选项数据
-    async getChannelOptions () {
-      // const o = {data:{}};  const {data} = o;  一层解构  对象的结构一层
-      // const res = {data:{data:{channels:[]}}}; 多层解构  const {data:{data:data}}
-      const {
-        data: { data }
-      } = await this.$http.get('channels')
-      this.channelOptions = data.channels
     },
     // 文章列表
     async getArticles () {

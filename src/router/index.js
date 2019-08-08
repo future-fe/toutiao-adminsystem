@@ -7,6 +7,7 @@ import Welcome from '@/views/welcome'
 import NotFound from '@/views/404'
 import Article from '@/views/article'
 import Setting from '@/views/setting'
+import Image from '@/views/image'
 import store from '@/store'
 Vue.use(VueRouter)
 
@@ -32,6 +33,10 @@ const router = new VueRouter({
       path: '/setting',
       name: 'setting',
       component: Setting
+    }, {
+      path: '/image',
+      name: 'image',
+      component: Image
     }]
   }, // 处理404
   {

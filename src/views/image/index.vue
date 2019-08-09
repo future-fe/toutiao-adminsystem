@@ -38,8 +38,12 @@
             <span
               class="el-icon-star-off"
               :class="{selected:item.is_collected}"
+              @click="toggleCollect(item)"
             ></span>
-            <span class="el-icon-delete"></span>
+            <span
+              class="el-icon-delete"
+              @click="deleteImage(item.id)"
+            ></span>
           </div>
         </div>
       </div>
@@ -123,6 +127,35 @@ export default {
     this.getImages()
   },
   methods: {
+    // 删除素材
+    deleteImage (id) {
+      this.$confirm('亲，此操作将永久删除该素材, 是否继续?', '温馨提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async () => {
+          await this.$http.delete(`user/images/${id}`)
+          // 删除成功后提示信息
+          this.$message.success('删除成功')
+          // 获取素材列表
+          this.getImages()
+        })
+        .catch(() => {})
+    },
+    // 添加收藏 取消收藏
+    async toggleCollect (item) {
+      const {
+        data: { data }
+      } = await this.$http.put(`user/images/${item.id}`, {
+        collect: !item.is_collected
+      })
+      // console.log(data)
+      // 更新当前图片状态
+      item.is_collected = data.collect
+      // 收藏成功提示信息
+      this.$message.success(data.collect ? '收藏成功' : '收藏未成功')
+    },
     // 上传成功的时候回调函数
     handleSuccess (res) {
       // 1. 获取图片地址显示img标签
@@ -140,6 +173,8 @@ export default {
     // 打开对话框
     openDialog () {
       this.dialogVisible = true
+      // 打开前清空预览的图片
+      this.imageUrl = null
     },
     // 改变分页事件对应函数
     changePager (newPage) {

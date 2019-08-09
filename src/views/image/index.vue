@@ -17,6 +17,7 @@
           type="success"
           style="float:right"
           size="small"
+          @click="openDialog () "
         >添加素材</el-button>
       </div>
       <div class="img_list">
@@ -53,10 +54,46 @@
       >
       </el-pagination>
     </el-card>
+    <el-dialog
+      title="添加素材"
+      :visible.sync="dialogVisible"
+      width="300px"
+    >
+      <!-- 上传组件 -->
+      <!-- action必选参数，上传的地址。上传图片的时候 headers设置上传的请求头部 加上认证信息 -->
+      <!--on-success文件上传成功时的钩子(回调函数function(response, file, fileList))-->
+      <!-- imageUrl 默认是null看到上传按钮,上传成功有值看到图片预览 -->
+      <!-- name上传的文件字段名 后台需要的字段名称image -->
+      <el-upload
+        class="avatar-uploader"
+        action="http://ttapi.research.itcast.cn/mp/v1_0/user/images"
+        :headers="uploadHeaders"
+        :show-file-list="false"
+        :on-success="handleSuccess"
+        name="image"
+      >
+        <img
+          v-if="imageUrl"
+          :src="imageUrl"
+          class="avatar"
+        >
+        <i
+          v-else
+          class="el-icon-plus avatar-uploader-icon"
+        ></i>
+      </el-upload>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click=" dialogVisible = false">关 闭</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import store from '@/store'
 export default {
   data () {
     return {
@@ -70,7 +107,15 @@ export default {
       // 图片列表数据
       images: [],
       // 总条数
-      total: 0
+      total: 0,
+      // 控制对话框显示隐藏
+      dialogVisible: false,
+      // 上传组件的头部信息
+      uploadHeaders: {
+        Authorization: `Bearer ${store.getUser().token} `
+      },
+      // 上传成功后的图片地址
+      imageUrl: null
     }
   },
   created () {
@@ -78,6 +123,24 @@ export default {
     this.getImages()
   },
   methods: {
+    // 上传成功的时候回调函数
+    handleSuccess (res) {
+      // 1. 获取图片地址显示img标签
+      // console.log(res) res.data.url 图片地址
+      this.imageUrl = res.data.url
+      // 2. 提示上传成功
+      this.$message.success('上传成功')
+      // 3. 过2s后关闭对话框，更新列表
+      window.setTimeout(() => {
+        this.dialogVisible = false
+        this.reqParams.page = 1
+        this.getImages()
+      }, 2000)
+    },
+    // 打开对话框
+    openDialog () {
+      this.dialogVisible = true
+    },
     // 改变分页事件对应函数
     changePager (newPage) {
       // 修改获取数据的页码

@@ -76,12 +76,12 @@
           label="标题"
         >
         </el-table-column>
-        <el-table-column>
+        <el-table-column label="状态">
           <template slot-scope="scope">
             <el-tag
               v-if="scope.row.status===0"
               type="info"
-            >草稿"</el-tag>
+            >草稿</el-tag>
             <el-tag v-if="scope.row.status===1">待审核</el-tag>
             <el-tag
               v-if="scope.row.status===2"
@@ -115,7 +115,7 @@
               circle
             ></el-button>
             <el-button
-              @click="del(scope.row.id)"
+              @click='del(scope.row.id)'
               plain
               type="danger"
               icon="el-icon-delete"

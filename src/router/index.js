@@ -10,6 +10,7 @@ import Setting from '@/views/setting'
 import Image from '@/views/image'
 import Publish from '@/views/publish'
 import Comment from '@/views/comment'
+import Fans from '@/views/fans'
 import store from '@/store'
 Vue.use(VueRouter)
 
@@ -47,6 +48,10 @@ const router = new VueRouter({
       path: '/comment',
       name: 'comment',
       component: Comment
+    }, {
+      path: '/fans',
+      name: 'fans',
+      component: Fans
     }]
   }, // 处理404
   {

@@ -1,6 +1,8 @@
 <template>
   <div class='container'>
-    个人设置
+    <com-b></com-b>
+    <br>
+    <com-a></com-a>
   </div>
 </template>
 

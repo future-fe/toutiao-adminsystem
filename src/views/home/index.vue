@@ -1,20 +1,16 @@
 <template>
   <el-container class="wrapper">
     <el-aside :width="isCollapse?'64px':'200px'">
-      <div
-        class="logo"
-        :class="{miniLogo:isCollapse}"
-      ></div>
+      <div class="logo"
+           :class="{miniLogo:isCollapse}"></div>
       <!-- 导航菜单 -->
-      <el-menu
-        :collapse="isCollapse"
-        :collapse-transition="false"
-        :default-active="$route.path"
-        background-color="#002033"
-        text-color="#fff"
-        active-text-color="#ffd04b"
-        router
-      >
+      <el-menu :collapse="isCollapse"
+               :collapse-transition="false"
+               :default-active="$route.path"
+               background-color="#002033"
+               text-color="#fff"
+               active-text-color="#ffd04b"
+               router>
         <el-menu-item index="/">
           <i class="el-icon-s-home"></i>
           <span slot="title">首页</span>
@@ -35,7 +31,7 @@
           <i class="el-icon-chat-dot-round"></i>
           <span slot="title">评论管理</span>
         </el-menu-item>
-        <el-menu-item index="fans">
+        <el-menu-item index="/fans">
           <i class="el-icon-present"></i>
           <span slot="title">粉丝管理</span>
         </el-menu-item>
@@ -47,28 +43,20 @@
     </el-aside>
     <el-container>
       <el-header>
-        <span
-          class="el-icon-s-fold"
-          @click="toggleMenu()"
-        ></span>
+        <span class="el-icon-s-fold"
+              @click="toggleMenu()"></span>
         <span class="text">江苏传智播客科技教育有限公司</span>
-        <el-dropdown
-          class="my-dropdown"
-          @command="changeMenu"
-        >
+        <el-dropdown class="my-dropdown"
+                     @command="changeMenu">
           <span class="el-dropdown-link">
-            <img
-              :src="photo"
-              alt=""
-            >
+            <img :src="photo"
+                 alt="">
             {{name}}
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item
-              icon="el-icon-setting"
-              command="setting"
-            >个人设置</el-dropdown-item>
+            <el-dropdown-item icon="el-icon-setting"
+                              command="setting">个人设置</el-dropdown-item>
             <el-dropdown-item command="logout"><i class="
               el-icon-unlock"></i>退出登录</el-dropdown-item>
           </el-dropdown-menu>
@@ -84,6 +72,7 @@
 
 <script>
 import store from '@/store'
+import eventBus from '@/components/eventBus'
 export default {
   data () {
     return {
@@ -93,6 +82,14 @@ export default {
     }
   },
   created () {
+    // 更新名称
+    eventBus.$on('updateName', data => {
+      this.name = data
+    })
+    // 更新头像
+    eventBus.$on('updatePhoto', data => {
+      this.photo = data
+    })
     // 获取本地用户信息
     const user = store.getUser()
     this.name = user.name

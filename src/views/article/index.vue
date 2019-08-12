@@ -5,13 +5,11 @@
       <div slot="header">
         <my-bread>内容管理</my-bread>
       </div>
-      <el-form
-        label-width="80px"
-        size="small"
-      >
+      <el-form label-width="80px"
+               size="small">
         <el-form-item label="状态：">
           <el-radio-group v-model="reqParams.status">
-            <el-radio :label=null>全部</el-radio>
+            <el-radio :label="null">全部</el-radio>
             <el-radio :label="0">草稿</el-radio>
             <el-radio :label="1">待审核</el-radio>
             <el-radio :label="2">审核通过</el-radio>
@@ -24,22 +22,18 @@
           <my-channel v-model="reqParams.channel_id"></my-channel>
         </el-form-item>
         <el-form-item label=" 日期：">
-          <el-date-picker
-            v-model="dataArr"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            @change="changeDate"
-            value-format="yyyy-MM-dd"
-          >
+          <el-date-picker v-model="dataArr"
+                          type="daterange"
+                          range-separator="至"
+                          start-placeholder="开始日期"
+                          end-placeholder="结束日期"
+                          @change="changeDate"
+                          value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button
-            type="primary"
-            @click="search()"
-          >筛选</el-button>
+          <el-button type="primary"
+                     @click="search()">筛选</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -55,72 +49,50 @@
           <template slot-scope="scope">
             <!--使用作用域插槽，results外部数据，articles传入了表格组件，帮你做了遍历，每一项数据插槽 row="每一项数据",
              使用每一项数据，其实是组件内部的数据，scope.row 获取 -->
-            <el-image
-              :src="scope.row.cover.images[0]"
-              fit="cover"
-              style="width:120px;height:80px"
-            >
+            <el-image :src="scope.row.cover.images[0]"
+                      fit="cover"
+                      style="width:120px;height:80px">
               <!-- 通过slot = error自定义加载失败图片显示 -->
               <div slot="error">
-                <img
-                  src="../../assets/images/error.gif"
-                  style="width: 120px; height: 80px"
-                  alt=""
-                >
+                <img src="../../assets/images/error.gif"
+                     style="width: 120px; height: 80px"
+                     alt="">
               </div>
             </el-image>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="title"
-          label="标题"
-        >
+        <el-table-column prop="title"
+                         label="标题">
         </el-table-column>
         <el-table-column label="状态">
           <template slot-scope="scope">
-            <el-tag
-              v-if="scope.row.status===0"
-              type="info"
-            >草稿</el-tag>
+            <el-tag v-if="scope.row.status===0"
+                    type="info">草稿</el-tag>
             <el-tag v-if="scope.row.status===1">待审核</el-tag>
-            <el-tag
-              v-if="scope.row.status===2"
-              type="success"
-            >审核通过</el-tag>
-            <el-tag
-              v-if="scope.row.status===3"
-              type="warning"
-            >审核失败</el-tag>
-            <el-tag
-              v-if="scope.row.status===4"
-              type="danger"
-            >已删除</el-tag>
+            <el-tag v-if="scope.row.status===2"
+                    type="success">审核通过</el-tag>
+            <el-tag v-if="scope.row.status===3"
+                    type="warning">审核失败</el-tag>
+            <el-tag v-if="scope.row.status===4"
+                    type="danger">已删除</el-tag>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="pubdate"
-          label="发布时间"
-        >
+        <el-table-column prop="pubdate"
+                         label="发布时间">
         </el-table-column>
-        <el-table-column
-          label="操作"
-          width="120px"
-        >
+        <el-table-column label="操作"
+                         width="120px">
           <template slot-scope="scope">
-            <el-button
-              @click="edit(scope.row.id)"
-              plain
-              type="primary"
-              icon="el-icon-edit"
-              circle
-            ></el-button>
-            <el-button
-              @click='del(scope.row.id)'
-              plain
-              type="danger"
-              icon="el-icon-delete"
-              circle
-            ></el-button>
+            <el-button @click="edit(scope.row.id)"
+                       plain
+                       type="primary"
+                       icon="el-icon-edit"
+                       circle></el-button>
+            <el-button @click='del(scope.row.id)'
+                       plain
+                       type="danger"
+                       icon="el-icon-delete"
+                       circle></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -130,14 +102,12 @@
         <!-- 默认一页显示10条每页显示条目个数  :page-size="reqParams.per_page"-->
         <!-- @current-change="changePager"  页码改变事件 当前页变动时候触发的事件。 -->
         <!-- 更新过数据后  当前页码也需要修改  选中对应的按钮 current-page 当前页数-->
-        <el-pagination
-          background
-          layout="prev, pager, next"
-          :total="total"
-          :page-size=" reqParams.per_page"
-          :current-page="reqParams.page"
-          @current-change="changePager"
-        >
+        <el-pagination background
+                       layout="prev, pager, next"
+                       :total="total"
+                       :page-size=" reqParams.per_page"
+                       :current-page="reqParams.page"
+                       @current-change="changePager">
         </el-pagination>
       </div>
 
